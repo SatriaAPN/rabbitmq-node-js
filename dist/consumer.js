@@ -1,17 +1,12 @@
 const amqp = require('amqplib');
 const rabbitMqServer = 'amqp://localhost:5672';
-const Singleton = require('./singleton');
-const singleton = new Singleton();
 
 // rabbitMq listener
 const listener = async(message) => {
     try {
-        console.log('listener getting a data');
+        console.log('a message has been received by the consumer');
         const data = JSON.parse(message.content.toString());
-
-        singleton.addLog(data);
-        console.log(data);
-        await new Promise(res => setTimeout(res, 4000));
+        console.log('this is the data from the message: ', data);
     } catch (error) {
         console.error(error);
     }
@@ -19,7 +14,6 @@ const listener = async(message) => {
 
 // rabbitMq consumer
 const consumer = async() => {
-    console.log('test');
     const connection = await amqp.connect(rabbitMqServer);
     const channel = await connection.createChannel();
     const queue = 'test:testing'
